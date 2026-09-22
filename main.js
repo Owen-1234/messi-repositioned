@@ -355,6 +355,11 @@ async function initialize() {
     state.a = periods.find(d => shortName(d) === "Guardiola")?.manager_id || periods[0].manager_id;
     state.b = periods.find(d => shortName(d) === "Luis Enrique")?.manager_id || periods[1].manager_id;
     d3.select("#swap-periods").on("click", () => { [state.a, state.b] = [state.b, state.a]; state.pinned = null; render(); });
+    d3.select("#guided-comparison").on("click", () => {
+      const gua = periods.find(d => shortName(d) === "Guardiola");
+      const koe = periods.find(d => shortName(d) === "Koeman");
+      if (gua && koe) { state.a = +gua.manager_id; state.b = +koe.manager_id; state.pinned = null; render(); }
+    });
     d3.select("#shot-type").on("change", e => { state.type = e.target.value; state.pinned = null; render(); });
     d3.select("#metric").on("change", e => { state.metric = e.target.value; renderMetrics(); });
     d3.selectAll("[data-mode]").on("click", e => {

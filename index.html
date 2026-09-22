@@ -3,102 +3,129 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A sourced, interactive D3 redesign comparing Lionel Messi's non-penalty La Liga shots across FC Barcelona manager periods.">
-  <title>Messi, Repositioned | Visualization Critique and Redesign</title>
+  <meta name="description" content="A sourced, interactive D3 critique and redesign of Lionel Messi's Barcelona shot maps.">
+  <title>Messi, Repositioned | A Barça shot-map critique</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
   <script defer src="main.js"></script>
 </head>
 <body>
-  <a class="skip" href="#analysis">Skip to visualization</a>
+  <a class="skip" href="#redesign">Skip to the interactive redesign</a>
   <header class="site-header">
     <div class="site-inner">
       <a class="site-brand" href="index.html" aria-label="Messi, Repositioned home">
         <span class="brand-stripes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        <span><b>Messi, Repositioned</b><small>Visualization critique &amp; redesign</small></span>
+        <span><b>Messi, Repositioned</b><small>Barça shot maps · critique + redesign</small></span>
       </a>
-      <nav aria-label="Project navigation"><a href="#analysis" aria-current="page">Explore</a><a href="#original">Critique</a><a href="report.html">Report</a></nav>
+      <nav aria-label="Project navigation">
+        <a href="#original">Original</a>
+        <a href="#critique">Critique</a>
+        <a href="#redesign">Redesign</a>
+        <a href="report.html">Report</a>
+      </nav>
     </div>
   </header>
 
   <main>
     <section class="intro" aria-labelledby="page-title">
       <div class="hero-copy">
-        <p class="eyebrow">FC BARCELONA · LA LIGA · 2004/05–2020/21</p>
+        <p class="eyebrow">STATS 401 · VISUALIZATION CRITIQUE + REDESIGN</p>
         <h1 id="page-title">Messi,<br><em>repositioned.</em></h1>
-        <p class="subtitle">How his shooting profile varied across eight Barcelona managers.</p>
+        <p class="subtitle">A Barça story about where shots happen, how often they happen, and what a fair comparison needs.</p>
         <p class="lede" id="finding-text">Loading the audited StatsBomb data…</p>
-        <div class="hero-stats" aria-label="Dataset scope"><span><b>17</b><small>seasons</small></span><span><b id="scope-shots">2,278</b><small>non-penalty shots</small></span><span><b>8</b><small>manager periods</small></span></div>
+        <div class="hero-actions"><a class="hero-button" href="#original">Start with the original <span aria-hidden="true">↓</span></a><a class="hero-text-link" href="#redesign">Jump to the redesign <span aria-hidden="true">→</span></a></div>
+        <dl class="hero-stats" aria-label="Dataset scope">
+          <div><dt>Seasons</dt><dd>17</dd></div>
+          <div><dt>Non-penalty shots</dt><dd id="scope-shots">2,278</dd></div>
+          <div><dt>Manager periods</dt><dd>8</dd></div>
+        </dl>
       </div>
-      <figure class="hero-visual"><div id="hero-visual" role="img" aria-label="Career shot density across the attacking half"></div><figcaption>Every included non-penalty attempt · common attacking-half coordinates</figcaption></figure>
+      <figure class="hero-visual"><div id="hero-visual" role="img" aria-label="Career shot density across the attacking half"></div><figcaption><span class="caption-rule" aria-hidden="true"></span>Every included non-penalty attempt · one common attacking-half coordinate system</figcaption></figure>
     </section>
 
-    <section class="workspace-band" id="analysis" aria-label="Interactive shot analysis">
+    <section class="story-section original-section" id="original" aria-labelledby="original-title">
+      <div class="story-heading"><div><span class="step">01 · THE ORIGINAL</span><h2 id="original-title">A compelling football question</h2></div><p class="heading-note">Start with the visualization we are redesigning.</p></div>
+      <div class="original-intro">
+        <p class="section-lede">Abhilash Prakash’s <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project">Lionel Messi Shots and Goals Under Different Managers</a> asks whether Messi’s shooting profile changed across eight Barcelona managers. Its repeated pitch maps make a familiar spatial question immediately legible.</p>
+        <div class="source-stamp"><span class="stamp-mark">↗</span><span><b>Original source</b><small>Prakash · 2021<br>GitHub project + linked images</small></span></div>
+      </div>
+      <div class="original-grid">
+        <figure><div class="image-frame"><img src="assets/original-early.png" loading="lazy" alt="Prakash's first four pitch maps for Rijkaard, Guardiola, Vilanova and Martino, crowded with shot points."><span class="image-label">A · EARLIER PERIODS</span></div><figcaption>Rijkaard → Martino · shot points and goals on repeated pitches. <a href="https://user-images.githubusercontent.com/66258607/141074960-e1e107d2-bab4-444d-8911-76b78f108e16.png">View source image</a></figcaption></figure>
+        <figure><div class="image-frame"><img src="assets/original-late.png" loading="lazy" alt="Prakash's remaining four pitch maps for Luis Enrique, Valverde, Setién and Koeman."><span class="image-label">B · LATER PERIODS</span></div><figcaption>Luis Enrique → Koeman · the same visual grammar across a second image. <a href="https://user-images.githubusercontent.com/66258607/141075116-e78a49bc-bf7e-488e-9b6b-4fe4dce0a8af.png">View source image</a></figcaption></figure>
+      </div>
+      <div class="original-reading"><span class="mini-label">DATA DESCRIPTION</span><p>The original combines shot locations, outcomes and expected-goals values across Messi’s La Liga Barcelona seasons from 2004/05 to 2020/21. A reader is invited to locate common shooting areas, compare periods, and infer changes in volume or quality from the marks.</p></div>
+    </section>
+
+    <section class="story-section read-section" id="read" aria-labelledby="read-title">
+      <div class="story-heading"><div><span class="step">02 · READ THE CHART</span><h2 id="read-title">What should a viewer be able to do?</h2></div><p class="heading-note">The redesign keeps the question, then makes the tasks testable.</p></div>
+      <div class="reading-grid">
+        <article><span class="reading-icon">01</span><h3>Intended message</h3><p>Messi’s shooting locations, frequency and chance quality varied across Barcelona manager periods. The chart should reveal patterns without implying that a manager caused them.</p></article>
+        <article><span class="reading-icon">02</span><h3>Audience</h3><p>Football fans and analysts who understand a pitch but may not know how to compare event data, exposure and expected goals fairly.</p></article>
+        <article><span class="reading-icon">03</span><h3>Viewer tasks</h3><p>Locate shooting areas · compare periods · identify concentration · compare frequency · inspect individual attempts.</p></article>
+      </div>
+      <div class="reading-footer"><span>VISUAL GRAMMAR</span><p><b>Position</b> = StatsBomb pitch coordinates · <b>mark</b> = shot · <b>gold diamond</b> = goal · <b>period</b> = Barcelona manager window</p></div>
+    </section>
+
+    <section class="story-section critique-section" id="critique" aria-labelledby="critique-title">
+      <div class="story-heading"><div><span class="step">03 · CRITIQUE</span><h2 id="critique-title">Keep the spatial idea. Fix the comparison.</h2></div><p class="heading-note">A critique is useful only when each problem leads to a design response.</p></div>
+      <div class="strengths-row">
+        <div class="strength-label"><span class="mini-label">WHAT WORKS</span><h3>Two strengths worth keeping</h3></div>
+        <article><span class="strength-number">01</span><div><h3>Familiar spatial encoding</h3><p>A pitch coordinate gives every mark immediate football meaning. Readers can see central, wide and close-range areas without decoding an abstract axis.</p></div></article>
+        <article><span class="strength-number">02</span><div><h3>Consistent small multiples</h3><p>Repeated pitch geometry offers a stable frame for manager periods. The visual vocabulary is memorable and the question stays about Messi’s position.</p></div></article>
+      </div>
+      <div class="weakness-intro"><span class="mini-label">FOUR LIMITS → FOUR RESPONSES</span><p>These are not cosmetic issues. Each one changes what a reader can responsibly conclude from the marks.</p></div>
+      <div class="critique-grid">
+        <article><div class="critique-top"><span class="critique-index">01</span><span class="critique-tag">OVERLAP</span></div><h3>Concentration disappears in the cloud</h3><div class="critique-lines"><p><b>Problem</b> Hundreds of opaque points stack in the same central zones.</p><p><b>Why it matters</b> A dense region looks busy, but its shape and relative share are hard to compare.</p><p class="response"><b>Redesign response</b> Fixed cells reveal share; individual shots remain one click away.</p></div></article>
+        <article><div class="critique-top"><span class="critique-index">02</span><span class="critique-tag">EXPOSURE</span></div><h3>Totals reward longer manager periods</h3><div class="critique-lines"><p><b>Problem</b> A longer tenure naturally produces more events.</p><p><b>Why it matters</b> Raw counts mix opportunity with shooting behaviour.</p><p class="response"><b>Redesign response</b> Rates divide by Messi’s audited regulation minutes on pitch.</p></div></article>
+        <article><div class="critique-top"><span class="critique-index">03</span><span class="critique-tag">MEMORY</span></div><h3>Eight periods are split across two images</h3><div class="critique-lines"><p><b>Problem</b> Readers must hold one map in memory while scanning another.</p><p><b>Why it matters</b> Comparison becomes a visual search task rather than an analytical one.</p><p class="response"><b>Redesign response</b> One linked timeline controls aligned A/B half-pitches.</p></div></article>
+        <article><div class="critique-top"><span class="critique-index">04</span><span class="critique-tag">SOURCE</span></div><h3>The measurement system changes mid-series</h3><div class="critique-lines"><p><b>Problem</b> The original combines providers and expected-goals definitions.</p><p><b>Why it matters</b> A visual difference may be a data difference, not a football difference.</p><p class="response"><b>Redesign response</b> One pinned StatsBomb snapshot makes the data contract explicit.</p></div></article>
+      </div>
+    </section>
+
+    <section class="workspace-band" id="redesign" aria-label="Interactive shot analysis">
       <div class="workspace">
-        <div class="section-top">
-          <div><span class="step">01 · COMPARE TWO ERAS</span><h2>Trace the Barcelona timeline</h2></div>
-          <p>Click a period to replace B. Select B again to swap the two highlighted eras.</p>
-        </div>
+        <div class="redesign-banner"><div><span class="step">04 · THE REDESIGN</span><h2>Now test the question</h2><p>Use the timeline to set A and B. Every view below updates from the same filtered shot set.</p></div><button class="guided-button" id="guided-comparison" type="button"><span>TRY THIS COMPARISON</span><b>Guardiola → Koeman</b><i aria-hidden="true">↗</i></button></div>
+        <div class="section-top timeline-top"><div><span class="step">01 · CHOOSE TWO PERIODS</span><h2>Trace the Barcelona timeline</h2></div><p>Click a period to replace B. Click B again to swap the highlighted eras.</p></div>
         <div class="manager-rail" id="manager-rail" aria-label="Manager periods in chronological order"></div>
         <div class="comparison-summary" aria-live="polite"><div class="compare-person compare-a"><span class="compare-tag">A</span><span><b id="compare-a-name">Guardiola</b><small id="compare-a-meta">2008–2012</small></span></div><span class="compare-arrow" aria-hidden="true">↔</span><div class="compare-person compare-b"><span class="compare-tag">B</span><span><b id="compare-b-name">Luis Enrique</b><small id="compare-b-meta">2014–2017</small></span></div><p id="comparison-note">Click a timeline period to replace B.</p><button id="swap-periods" type="button" aria-label="Swap comparison periods">Swap A / B</button></div>
 
-        <div class="section-top pitch-top">
-          <div><span class="step">02 · WHERE MESSI SHOT</span><h2>Where did the shots come from?</h2></div>
-          <div class="tools">
-            <label class="filter-label">Shot type<select id="shot-type"><option value="nonpen">All non-penalty</option><option value="Open Play">Open play</option><option value="Free Kick">Direct free kick</option></select></label>
-            <div class="segmented" role="group" aria-label="Shot map display"><button type="button" data-mode="density" aria-pressed="true">Density</button><button type="button" data-mode="shots" aria-pressed="false">Individual shots</button></div>
-          </div>
-        </div>
-        <div class="map-key-row">
-          <p class="chart-note" id="map-description">Each cell shows its share of the selected period's attempts. Both pitches use the same scale.</p>
-          <div class="density-legend" id="density-legend" aria-label="Density scale"></div>
-        </div>
-        <div class="pitch-grid">
-          <figure class="pitch-panel pitch-panel-a"><figcaption><span class="pitch-letter a">A</span><span><strong id="pitch-a-title">Loading</strong><small id="pitch-a-meta"></small></span></figcaption><div class="pitch-host" id="pitch-a"></div></figure>
-          <figure class="pitch-panel pitch-panel-b"><figcaption><span class="pitch-letter b">B</span><span><strong id="pitch-b-title">Loading</strong><small id="pitch-b-meta"></small></span></figcaption><div class="pitch-host" id="pitch-b"></div></figure>
-        </div>
+        <div class="section-top pitch-top"><div><span class="step">02 · WHERE MESSI SHOT</span><h2>Where did the attempts come from?</h2></div><div class="tools"><label class="filter-label">Shot type<select id="shot-type"><option value="nonpen">All non-penalty</option><option value="Open Play">Open play</option><option value="Free Kick">Direct free kick</option></select></label><div class="segmented" role="group" aria-label="Shot map display"><button type="button" data-mode="density" aria-pressed="true">Density</button><button type="button" data-mode="shots" aria-pressed="false">Individual shots</button></div></div></div>
+        <div class="map-key-row"><p class="chart-note" id="map-description">Each cell shows its share of the selected period's attempts. Both pitches use the same scale.</p><div class="density-legend" id="density-legend" aria-label="Density scale"></div></div>
+        <div class="pitch-grid"><figure class="pitch-panel pitch-panel-a"><figcaption><span class="pitch-letter a">A</span><span><strong id="pitch-a-title">Loading</strong><small id="pitch-a-meta"></small></span></figcaption><div class="pitch-host" id="pitch-a"></div></figure><figure class="pitch-panel pitch-panel-b"><figcaption><span class="pitch-letter b">B</span><span><strong id="pitch-b-title">Loading</strong><small id="pitch-b-meta"></small></span></figcaption><div class="pitch-host" id="pitch-b"></div></figure></div>
         <div class="event-detail" id="event-detail" aria-live="polite"><span class="detail-kicker">INSPECT</span><span id="event-detail-text">Hover or focus a density cell. In shot mode, select an attempt to pin its match details.</span></div>
 
-        <div class="section-top metrics-top">
-          <div><span class="step">03 · HOW HIS PROFILE CHANGED</span><h2 id="metric-title">Compare frequency and chance quality</h2></div>
-          <label class="filter-label">Measure<select id="metric"><option value="shots90">Shots / 90</option><option value="npxg90">NPxG / 90</option><option value="xgshot">NPxG / shot</option></select></label>
-        </div>
-        <div class="metric-intro"><p class="chart-note" id="metric-description">Non-penalty shots per 90 regulation minutes on the pitch. Stoppage-time shots remain in the numerator.</p><p class="metric-insight" id="metric-insight" aria-live="polite"></p></div>
-        <div id="metric-chart" class="metric-chart" role="img" aria-label="Comparison of manager periods"></div>
-        <div id="metric-table" class="sr-only"></div>
+        <div class="section-top metrics-top"><div><span class="step">03 · NORMALISE THE QUESTION</span><h2 id="metric-title">Compare frequency and chance quality</h2></div><label class="filter-label">Measure<select id="metric"><option value="shots90">Shots / 90</option><option value="npxg90">NPxG / 90</option><option value="xgshot">NPxG / shot</option></select></label></div>
+        <div class="metric-intro"><p class="chart-note" id="metric-description">Non-penalty shots per 90 regulation minutes on the pitch.</p><p class="metric-insight" id="metric-insight" aria-live="polite"></p></div>
+        <div id="metric-chart" class="metric-chart" role="img" aria-label="Comparison of manager periods"></div><div id="metric-table" class="sr-only"></div>
       </div>
     </section>
 
-    <section class="context" id="original" aria-labelledby="original-title">
-      <div class="section-top"><div><span class="step">THE ORIGINAL → OUR RESPONSE</span><h2 id="original-title">Keep the football question, rebuild the comparison</h2></div><a class="text-link" href="report.html">Read the project report <span aria-hidden="true">→</span></a></div>
-      <p class="context-lede">Abhilash Prakash's <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project">Lionel Messi Shots and Goals Under Different Managers</a> makes shot locations immediately recognizable through repeated pitches. It also creates four concrete comparison problems that the redesign addresses.</p>
-      <div class="original-grid">
-        <figure><img src="assets/original-early.png" loading="lazy" alt="Prakash's first four pitch maps for Rijkaard, Guardiola, Vilanova and Martino, crowded with shot points."><figcaption>Original, part 1: earlier manager periods. <a href="https://user-images.githubusercontent.com/66258607/141074960-e1e107d2-bab4-444d-8911-76b78f108e16.png">Source image</a></figcaption></figure>
-        <figure><img src="assets/original-late.png" loading="lazy" alt="Prakash's remaining four pitch maps for Luis Enrique, Valverde, Setién and Koeman."><figcaption>Original, part 2: later manager periods. <a href="https://user-images.githubusercontent.com/66258607/141075116-e78a49bc-bf7e-488e-9b6b-4fe4dce0a8af.png">Source image</a></figcaption></figure>
-      </div>
-      <div class="critique-grid">
-        <div><span class="critique-index">01</span><h3>Overlap hides concentration</h3><p>Hundreds of opaque circles compete in central areas.</p><strong class="response">Density bins reveal the shape; shot mode preserves the events.</strong></div>
-        <div><span class="critique-index">02</span><h3>Totals hide exposure</h3><p>Longer manager periods naturally create more marks.</p><strong class="response">Per-90 rates use Messi's audited on-pitch minutes.</strong></div>
-        <div><span class="critique-index">03</span><h3>Comparison relies on memory</h3><p>Eight pitches split across two images are hard to compare.</p><strong class="response">One linked timeline keeps the A/B views aligned.</strong></div>
-        <div><span class="critique-index">04</span><h3>Sources change mid-series</h3><p>The original combines providers and measurement systems.</p><strong class="response">One pinned StatsBomb snapshot makes the contract explicit.</strong></div>
+    <section class="story-section decisions-section" id="decisions" aria-labelledby="decisions-title">
+      <div class="story-heading"><div><span class="step">05 · WHY THIS DESIGN</span><h2 id="decisions-title">Three choices make the evidence easier to read</h2></div><p class="heading-note">Every visual change answers a critique above.</p></div>
+      <div class="decision-grid">
+        <article><span class="decision-number">01</span><h3>Points → density</h3><p class="decision-problem"><b>Problem</b> Overlap hides concentration.</p><p><b>Change</b> An 8 × 8 common-scale grid is the default; individual attempts remain available.</p><p class="decision-result"><b>Result</b> Compare spatial shape first, then recover the event detail when needed.</p></article>
+        <article><span class="decision-number">02</span><h3>Totals → rates</h3><p class="decision-problem"><b>Problem</b> Tenure length changes raw totals.</p><p><b>Change</b> Shots and NPxG are normalised by Messi’s regulation minutes on pitch.</p><p class="decision-result"><b>Result</b> The chart asks about observed behaviour per 90, not time exposed.</p></article>
+        <article><span class="decision-number">03</span><h3>Split views → linked comparison</h3><p class="decision-problem"><b>Problem</b> Two images force memory-based scanning.</p><p><b>Change</b> A single chronological rail controls both pitches and the metric plot.</p><p class="decision-result"><b>Result</b> One click changes the comparison while the visual frame stays stable.</p></article>
       </div>
     </section>
 
-    <section class="methods" id="methods" aria-labelledby="methods-title">
-      <div class="section-top"><div><span class="step">METHOD NOTES</span><h2 id="methods-title">What the evidence can support</h2></div><a class="text-link" href="report.html">Full methodology →</a></div>
-      <div class="methods-grid">
-        <div><span>01</span><h3>Scope</h3><p>Barcelona La Liga, 2004/05–2020/21. The default excludes penalties; direct free kicks remain filterable inside the non-penalty total.</p></div>
-        <div><span>02</span><h3>Measurement</h3><p>Playing time is the union of lineup intervals, capped at 90 regulation minutes per match. Stoppage-time shots remain in the numerator.</p></div>
-        <div><span>03</span><h3>Interpretation</h3><p>Differences are descriptive. Age, role, teammates, opponents and historical coding also vary across the recorded periods.</p></div>
-      </div>
+    <section class="story-section before-after" id="before-after" aria-labelledby="before-after-title">
+      <div class="story-heading"><div><span class="step">06 · BEFORE / AFTER</span><h2 id="before-after-title">What changed—and what remains uncertain</h2></div><p class="heading-note">A stronger visual also states its trade-offs.</p></div>
+      <div class="ba-grid"><div class="ba-column before"><span class="ba-label">BEFORE · ORIGINAL</span><ul><li>Opaque point clouds make concentration difficult to compare.</li><li>Raw totals mix shooting behaviour with manager tenure.</li><li>Eight periods are split across separate images.</li><li>Providers and measurement definitions change in the series.</li></ul></div><div class="ba-arrow" aria-hidden="true">→</div><div class="ba-column after"><span class="ba-label">AFTER · THIS REDESIGN</span><ul><li>Common-scale density plus reversible individual-shot mode.</li><li>Shots / 90, NPxG / 90 and NPxG / shot are explicit.</li><li>One timeline creates linked, memory-light comparison.</li><li>Pinned snapshot, audit record and descriptive language.</li></ul></div></div>
+      <div class="tradeoff"><span class="mini-label">TRADE-OFFS / LIMITATIONS</span><p>Density sacrifices exact event positions until a viewer switches modes. Manager periods still differ in age, role, teammates, opponents and sample size; 39 manager fields are inferred only from otherwise single-manager seasons. These are descriptive comparisons, not evidence that a manager caused a change.</p></div>
+    </section>
+
+    <section class="story-section methods" id="sources" aria-labelledby="methods-title">
+      <div class="story-heading"><div><span class="step">07 · DATA &amp; SOURCES</span><h2 id="methods-title">An auditable data contract</h2></div><a class="text-link" href="report.html">Read the full report <span aria-hidden="true">→</span></a></div>
+      <div class="methods-grid"><div><span>01</span><h3>Scope</h3><p>Barcelona La Liga, 2004/05–2020/21. The default excludes penalties; direct free kicks remain filterable.</p></div><div><span>02</span><h3>Measurement</h3><p>Playing time is the union of lineup intervals, capped at 90 regulation minutes per match. Stoppage-time shots remain in the numerator.</p></div><div><span>03</span><h3>Interpretation</h3><p>StatsBomb coordinates are shared across periods. Differences coincide with manager windows; they are not causal claims.</p></div></div>
       <p class="provenance" id="provenance">Data audit loading…</p>
-      <div class="references"><h3>References</h3><p>Shot and lineup events: <a href="https://github.com/statsbomb/open-data">StatsBomb Open Data</a> (<a href="https://github.com/statsbomb/open-data/tree/4b73468fc5b0f1950f9f66fada70ad3a4f9327cb">pinned snapshot</a>). <a href="https://blogarchive.statsbomb.com/news/statsbomb-release-free-messi-data-all-seasons-from-2004-05-2020-21-now-available/">Release and scope</a>. Original visualization: <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project">Abhilash Prakash</a>. <a href="prepare_data.py">Reproducible processing script</a> and <a href="data/audit.json">audit record</a>.</p><p class="credit"><img src="assets/statsbomb-icon.svg" alt="StatsBomb"><span>Data provided by StatsBomb for public, non-commercial analysis. <a href="https://statsbomb.com/media-pack/">Attribution and media pack</a>.</span></p></div>
+      <div class="references"><h3>Sources and attribution</h3><p>Shot and lineup events: <a href="https://github.com/statsbomb/open-data">StatsBomb Open Data</a> (<a href="https://github.com/statsbomb/open-data/tree/4b73468fc5b0f1950f9f66fada70ad3a4f9327cb">pinned snapshot</a>). <a href="https://blogarchive.statsbomb.com/news/statsbomb-release-free-messi-data-all-seasons-from-2004-05-2020-21-now-available/">Release and scope</a>. Original visualization: <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project">Abhilash Prakash</a>. <a href="prepare_data.py">Reproducible processing script</a> · <a href="data/audit.json">audit record</a>.</p><p class="credit"><img src="assets/statsbomb-icon.svg" alt="StatsBomb"><span>Data provided by StatsBomb for public, non-commercial analysis. <a href="https://statsbomb.com/media-pack/">Attribution and media pack</a>.</span></p></div>
     </section>
   </main>
-  <footer><span>STATS 401 · Shilin Ou</span><span>Built with D3.js · Audited external data</span></footer>
+  <footer><span>STATS 401 · Shilin Ou</span><span>Built with D3.js · Audited external data</span><a href="report.html">Project report ↗</a></footer>
   <div class="tooltip" id="shot-tooltip" role="tooltip" hidden></div>
 </body>
 </html>
