@@ -1,0 +1,372 @@
+{
+  "source": "StatsBomb Open Data",
+  "commit": "4b73468fc5b0f1950f9f66fada70ad3a4f9327cb",
+  "season_files": 17,
+  "barcelona_match_records": 524,
+  "messi_appearances": 518,
+  "shot_events": 2352,
+  "non_penalty_shots": 2278,
+  "shot_types": {
+    "Open Play": 1858,
+    "Free Kick": 420,
+    "Penalty": 74
+  },
+  "versions": [
+    {
+      "data_version": "1.1.0",
+      "shot_fidelity": "2",
+      "xy_fidelity": "2",
+      "matches": 498
+    },
+    {
+      "data_version": "1.1.0",
+      "shot_fidelity": "2",
+      "xy_fidelity": null,
+      "matches": 26
+    }
+  ],
+  "matches_with_tactical_position_splits": 146,
+  "matches_with_no_messi_lineup": 6,
+  "zero_regulation_minute_lineup_ids": [
+    69153
+  ],
+  "manager_source_counts": {
+    "match": 485,
+    "sole-known-manager-in-season": 39
+  },
+  "imputed_manager_matches": [
+    {
+      "match_id": 68324,
+      "season": "2005/2006",
+      "manager": "Frank Rijkaard",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 68350,
+      "season": "2005/2006",
+      "manager": "Frank Rijkaard",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69172,
+      "season": "2005/2006",
+      "manager": "Frank Rijkaard",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 68333,
+      "season": "2006/2007",
+      "manager": "Frank Rijkaard",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69162,
+      "season": "2006/2007",
+      "manager": "Frank Rijkaard",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69232,
+      "season": "2008/2009",
+      "manager": "Josep Guardiola i Sala",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69177,
+      "season": "2008/2009",
+      "manager": "Josep Guardiola i Sala",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69256,
+      "season": "2009/2010",
+      "manager": "Josep Guardiola i Sala",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 69305,
+      "season": "2010/2011",
+      "manager": "Josep Guardiola i Sala",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70259,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70262,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70286,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70292,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70270,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70275,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70300,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70304,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70308,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 266724,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70280,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70295,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70296,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 266015,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 266433,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 266827,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70287,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70260,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70282,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70297,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70294,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70271,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70272,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70305,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70307,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70256,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70281,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 70284,
+      "season": "2012/2013",
+      "manager": "Francesc Vilanova i Bayo",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 267368,
+      "season": "2013/2014",
+      "manager": "Gerardo Daniel Martino",
+      "rule": "sole-known-manager-in-season"
+    },
+    {
+      "match_id": 267400,
+      "season": "2014/2015",
+      "manager": "Luis Enrique Martínez García",
+      "rule": "sole-known-manager-in-season"
+    }
+  ],
+  "periods": [
+    {
+      "manager_id": 4953,
+      "manager": "Frank Rijkaard",
+      "first": "2004-10-16",
+      "last": "2008-05-17",
+      "matches": 76,
+      "minutes": 4912.03,
+      "shots": 168,
+      "goals": 25,
+      "npxg": 18.6636,
+      "penalties": 4
+    },
+    {
+      "manager_id": 36,
+      "manager": "Josep Guardiola i Sala",
+      "first": "2008-08-31",
+      "last": "2012-05-12",
+      "matches": 136,
+      "minutes": 11484.6,
+      "shots": 596,
+      "goals": 120,
+      "npxg": 82.0233,
+      "penalties": 20
+    },
+    {
+      "manager_id": 1001722,
+      "manager": "Francesc Vilanova i Bayo",
+      "first": "2012-08-19",
+      "last": "2013-05-12",
+      "matches": 32,
+      "minutes": 2634.53,
+      "shots": 154,
+      "goals": 42,
+      "npxg": 18.8574,
+      "penalties": 4
+    },
+    {
+      "manager_id": 163,
+      "manager": "Gerardo Daniel Martino",
+      "first": "2013-08-18",
+      "last": "2014-05-17",
+      "matches": 31,
+      "minutes": 2501.03,
+      "shots": 155,
+      "goals": 22,
+      "npxg": 18.1739,
+      "penalties": 7
+    },
+    {
+      "manager_id": 793,
+      "manager": "Luis Enrique Martínez García",
+      "first": "2014-08-24",
+      "last": "2017-05-21",
+      "matches": 105,
+      "minutes": 8931.0,
+      "shots": 501,
+      "goals": 92,
+      "npxg": 57.6421,
+      "penalties": 20
+    },
+    {
+      "manager_id": 227,
+      "manager": "Ernesto Valverde Tejedor",
+      "first": "2017-08-20",
+      "last": "2020-01-04",
+      "matches": 84,
+      "minutes": 6867.28,
+      "shots": 409,
+      "goals": 75,
+      "npxg": 41.327,
+      "penalties": 11
+    },
+    {
+      "manager_id": 238,
+      "manager": "Enrique Setién Solar",
+      "first": "2020-01-19",
+      "last": "2020-07-19",
+      "matches": 19,
+      "minutes": 1710.0,
+      "shots": 105,
+      "goals": 9,
+      "npxg": 9.9022,
+      "penalties": 3
+    },
+    {
+      "manager_id": 676,
+      "manager": "Ronald Koeman",
+      "first": "2020-09-27",
+      "last": "2021-05-16",
+      "matches": 35,
+      "minutes": 3023.0,
+      "shots": 190,
+      "goals": 27,
+      "npxg": 18.9525,
+      "penalties": 5
+    }
+  ],
+  "minutes_definition": "Union of Messi lineup position intervals, capped at 90 regulation minutes per match; stoppage-time shots remain in event numerators."
+}

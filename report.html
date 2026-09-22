@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A 500–800 word report documenting the critique and redesign of a Lionel Messi shot-map visualization.">
+  <title>Project Report | Messi, Repositioned</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .report{width:min(860px,calc(100% - 48px));margin-inline:auto;padding:42px 0 70px}.report h1{max-width:780px}.report-meta{margin:12px 0 34px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--line);padding-bottom:20px}.report h2{font:600 26px/1.15 "Newsreader",Georgia,serif;margin:34px 0 10px}.report p{font:16px/1.7 "Newsreader",Georgia,serif;margin-bottom:16px}.report figure{margin:25px 0}.report figure img{display:block;width:100%;height:auto;border:1px solid var(--line);background:#fff}.report figcaption{font-size:12px;color:var(--muted);margin-top:7px}.report .references p{font:13px/1.55 "DM Sans",Arial,sans-serif}.report .back{display:inline-block;margin-bottom:24px;font-size:12px;font-weight:700;color:var(--wine)}@media(max-width:650px){.report{width:calc(100% - 24px);padding-top:30px}.report p{font-size:15px}.report h2{font-size:23px}}
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="site-inner"><a class="site-brand" href="index.html" aria-label="Messi, Repositioned home"><span class="brand-stripes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span><b>Messi, Repositioned</b><small>Visualization critique &amp; redesign</small></span></a><nav aria-label="Project navigation"><a href="index.html#analysis">Explore</a><a href="index.html#original">Critique</a><a href="report.html" aria-current="page">Report</a></nav></div></header>
+  <main><article class="report">
+    <a class="back" href="index.html">← Return to the interactive redesign</a>
+    <p class="eyebrow">Visualization Critique and Redesign · 500–800 word report</p>
+    <h1>Messi, Repositioned</h1>
+    <p class="subtitle">Comparing his La Liga shot profile across Barcelona manager periods</p>
+    <p class="report-meta">Shilin Ou · STATS 401 · 22 September 2026</p>
+
+    <h2>Original visualization and context</h2>
+    <p>Abhilash Prakash’s <em>Lionel Messi Shots and Goals Under Different Managers</em> compares Messi’s shot locations across eight Barcelona manager periods from 2004/05 to 2020/21. The original project combines StatsBomb data for earlier seasons with Understat data for 2014–2021. Its likely audience is football supporters and analysts seeking to understand how Messi’s shooting changed over his La Liga career. Viewers should be able to locate common shooting areas, compare periods, and identify changes in volume or efficiency. Because these are observational periods, this redesign describes differences that coincide with managers; it does not claim that managers caused them.</p>
+    <figure><img src="assets/original-early.png" alt="The original visualization's early-period pitch maps, with many overlapping shot points."><figcaption>Figure 1. The first half of Prakash’s original visualization. Source: <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project">Prakash (2021)</a>.</figcaption></figure>
+
+    <h2>Critique</h2>
+    <p>The original makes two effective choices. Placing shots on a football pitch gives every mark immediate spatial meaning, while repeated, consistently scaled pitches establish a sensible small-multiple structure. Goals are also distinguished from unsuccessful attempts, supporting outcome comparison.</p>
+    <p>However, four problems limit the intended tasks. First, hundreds of opaque marks overlap in central areas. A viewer sees a dense cloud but cannot reliably compare its shape or concentration. Second, raw totals confound shooting frequency with exposure: Guardiola’s 136 recorded appearances naturally produce more marks than Setién’s 19. Third, splitting eight periods across two images forces readers to compare from memory, while small annotations weaken the visual hierarchy. Fourth, combining providers introduces a measurement discontinuity because event definitions and expected-goals models may differ. Penalties and free kicks also influence apparent chance quality and distance when treated as one undifferentiated set.</p>
+
+    <h2>Redesign rationale</h2>
+    <p>The redesign uses one pinned StatsBomb Open Data snapshot for all 17 La Liga seasons. The audit found 524 Barcelona match files, 518 positive-regulation-minute Messi lineup appearances, and 2,352 shots. Manager assignment comes from each match; 39 missing manager records are labeled as inferred only when the season contains one known Barcelona manager. Playing time is calculated from the union of lineup intervals, preventing tactical position changes from double counting minutes.</p>
+    <p>Three linked decisions answer the critique. First, a chronological manager selector places every period in one interface and exposes appearances and minutes. Second, aligned attacking-half pitches switch between individual events and fixed 8-by-8 bins. Bins encode each cell’s share of a period’s filtered shots on a common scale, reducing overlap without allowing longer periods to dominate. Hover or focus reveals cell counts; selecting an event pins its match details, making the aggregation trade-off reversible. Third, an animated dot plot compares shots per 90, non-penalty xG per 90, or xG per shot. The default excludes penalties, and an open-play/free-kick filter updates spatial and quantitative views together.</p>
+    <figure><img src="assets/redesign.png" alt="The redesigned page showing two aligned attacking-half density pitches and a normalized manager comparison plot."><figcaption>Figure 2. Coordinated half-pitch density and normalized-rate views in the D3 redesign.</figcaption></figure>
+
+    <h2>Original versus redesign</h2>
+    <p>The redesign reveals distinctions hidden by raw point clouds. Koeman’s period has the highest observed non-penalty shot frequency (5.66 per 90), whereas Guardiola’s has the highest average non-penalty chance quality (0.138 xG per shot). Free-kick frequency rises from 0.09 per 90 under Rijkaard to 1.58 under Setién, demonstrating why shot type must remain filterable. These findings make frequency, quality, and location separate comparison tasks instead of treating “more dots” as better performance.</p>
+    <p>Limitations remain. Manager periods also differ in Messi’s age, role, teammates, opponents, and sample size. Historical coding may vary within one provider; 26 matches lack an xy-fidelity version value. Density sacrifices exact event locations, and the 39 inferred manager fields reduce certainty. The interface therefore preserves individual shots, reports exposure, and uses descriptive rather than causal language.</p>
+
+    <div class="references"><h2>References</h2><p>Prakash, A. (2021). <a href="https://github.com/Abhilashup/Lionel-Messi-Shots-And-Goals-Data-Visualization-Project"><em>Lionel Messi Shots and Goals Under Different Managers</em></a>.</p><p>StatsBomb. (2022). <a href="https://blogarchive.statsbomb.com/news/statsbomb-release-free-messi-data-all-seasons-from-2004-05-2020-21-now-available/"><em>StatsBomb Release Free Lionel Messi Data: All Seasons From 2004/05–2020/21 Now Available</em></a>.</p><p>StatsBomb. (2026). <a href="https://github.com/statsbomb/open-data/tree/4b73468fc5b0f1950f9f66fada70ad3a4f9327cb"><em>Open Data</em>, commit 4b73468</a>.</p></div>
+  </article></main>
+  <footer><span>STATS 401 · Shilin Ou</span><a href="index.html">Interactive redesign</a></footer>
+</body>
+</html>
