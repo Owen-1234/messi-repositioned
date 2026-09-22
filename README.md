@@ -4,6 +4,8 @@ An interactive D3.js critique and redesign for the STATS 401 individual project.
 
 The first screen is the working visualization: an eight-period selector, two synchronized attacking-half pitches, and a normalized comparison plot. The original visualization, critique, audit, and 500–800 word report are included below the interactive analysis.
 
+**[Explore the published visualization](https://owen-1234.github.io/messi-repositioned/)** · **[Read the project report](https://owen-1234.github.io/messi-repositioned/report.html)**
+
 ## Files
 
 - `index.html`, `style.css`, `main.js`: interactive visualization and critique page
