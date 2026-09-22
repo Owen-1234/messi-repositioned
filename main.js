@@ -33,22 +33,49 @@ function renderRail() {
     .attr("class", "period").attr("type", "button")
     .attr("data-selected", d => +d.manager_id === +state.a && +d.manager_id === +state.b ? "both" : +d.manager_id === +state.a ? "a" : +d.manager_id === +state.b ? "b" : null)
     .attr("aria-pressed", d => +d.manager_id === +state.a || +d.manager_id === +state.b ? "true" : "false")
-    .attr("aria-label", d => `${shortName(d)}, ${d.matches} appearances, ${formatInt(d.minutes)} regulation minutes. Set as comparison period B.`)
+    .attr("aria-label", d => +d.manager_id === +state.a ? `${shortName(d)}, period A. Select another period to compare.` : +d.manager_id === +state.b ? `${shortName(d)}, period B. Activate to swap A and B.` : `${shortName(d)}, ${d.matches} appearances, ${formatInt(d.minutes)} regulation minutes. Set as period B.`)
     .html(d => {
       const selected = +d.manager_id === +state.a && +d.manager_id === +state.b ? "A/B" : +d.manager_id === +state.a ? "A" : +d.manager_id === +state.b ? "B" : "";
       return `${selected ? `<span class="period-slot">${selected}</span>` : ""}<span class="period-name">${shortName(d)}</span><span class="period-date">${d.first.slice(0, 4)}–${d.last.slice(0, 4)} · ${d.matches} apps</span><span class="period-bar"><span style="width:${100 * d.minutes / maxMinutes}%"></span></span>`;
     })
     .on("click", (_, d) => {
       if (+d.manager_id === +state.a) return;
-      state.b = +d.manager_id;
+      if (+d.manager_id === +state.b) [state.a, state.b] = [state.b, state.a];
+      else state.b = +d.manager_id;
       state.pinned = null;
       render();
     });
   cards.order();
-  d3.select("#manager-a").property("value", state.a);
-  d3.select("#manager-b").property("value", state.b);
   const a = findPeriod(state.a), b = findPeriod(state.b);
-  d3.select("#comparison-note").text(`${a.matches} vs ${b.matches} appearances · ${formatInt(a.minutes)} vs ${formatInt(b.minutes)} regulation minutes`);
+  d3.select("#compare-a-name").text(shortName(a));
+  d3.select("#compare-a-meta").text(`${a.first.slice(0, 4)}–${a.last.slice(0, 4)} · ${formatInt(a.minutes)} min`);
+  d3.select("#compare-b-name").text(shortName(b));
+  d3.select("#compare-b-meta").text(`${b.first.slice(0, 4)}–${b.last.slice(0, 4)} · ${formatInt(b.minutes)} min`);
+  d3.select("#comparison-note").text(`${a.matches} vs ${b.matches} appearances · click B on the timeline to swap`);
+}
+
+function drawHeroVisual() {
+  const host = d3.select("#hero-visual");
+  const width = Math.max(280, host.node().clientWidth || 440), height = 280;
+  const svg = host.selectAll("svg").data([null]).join("svg").attr("viewBox", `0 0 ${width} ${height}`).attr("role", "img");
+  svg.selectAll("*").remove();
+  const x = d3.scaleLinear().domain([60, 120]).range([22, width - 22]);
+  const y = d3.scaleLinear().domain([0, 80]).range([height - 24, 24]);
+  svg.append("rect").attr("x", 0).attr("y", 0).attr("width", width).attr("height", height).attr("fill", "#1f2b42");
+  svg.append("rect").attr("x", x(60)).attr("y", y(80)).attr("width", x(120) - x(60)).attr("height", y(0) - y(80)).attr("fill", "#243b57").attr("opacity", .75);
+  d3.range(8).forEach(i => svg.append("rect").attr("x", 0).attr("y", i * height / 8).attr("width", width).attr("height", height / 8).attr("fill", i % 2 ? "#213650" : "#1e3048").attr("opacity", .55));
+  const line = svg.append("g").attr("fill", "none").attr("stroke", "rgba(255,255,255,.45)").attr("stroke-width", 1);
+  line.append("rect").attr("x", x(60)).attr("y", y(80)).attr("width", x(120) - x(60)).attr("height", y(0) - y(80));
+  line.append("rect").attr("x", x(60)).attr("y", y(62)).attr("width", x(120) - x(60)).attr("height", y(18) - y(62));
+  line.append("rect").attr("x", x(60)).attr("y", y(50)).attr("width", x(120) - x(60)).attr("height", y(30) - y(50));
+  const all = shots.filter(d => d.shot_type !== "Penalty");
+  const bins = binsFor(all).filter(d => d.count);
+  const max = d3.max(bins, d => d.share) || 1;
+  const glow = svg.append("g").attr("aria-hidden", "true");
+  bins.forEach(d => glow.append("circle").attr("cx", x(60 + (d.xBin + .5) * 7.5)).attr("cy", y((d.yBin + .5) * 10)).attr("r", 7 + 20 * d.share / max).attr("fill", d.xBin % 2 ? COLOR.b : COLOR.a).attr("opacity", .15 + .35 * d.share / max).attr("filter", "blur(7px)"));
+  svg.append("g").selectAll("circle").data(all.filter((_, i) => i % 10 === 0)).join("circle").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 1.35).attr("fill", (_, i) => i % 2 ? "#d75b8b" : "#5b94ce").attr("opacity", .58);
+  svg.append("text").attr("x", width - 18).attr("y", 20).attr("text-anchor", "end").attr("fill", "rgba(255,255,255,.8)").attr("font-size", 10).attr("font-weight", 700).attr("letter-spacing", 1.5).text("ATTACKING HALF");
+  svg.append("text").attr("x", 18).attr("y", height - 11).attr("fill", "rgba(255,255,255,.7)").attr("font-size", 10).text("2,278 attempts · one common scale");
 }
 
 function addPitchBase(svg, toX, toY, letter) {
@@ -59,8 +86,8 @@ function addPitchBase(svg, toX, toY, letter) {
   d3.range(8).forEach(i => grass.append("rect")
     .attr("x", toX(0)).attr("y", toY(120 - i * 7.5))
     .attr("width", toX(80) - toX(0)).attr("height", Math.abs(toY(112.5) - toY(120)) + .5)
-    .attr("fill", i % 2 ? "#237f51" : "#20784d"));
-  grass.append("rect").attr("x", toX(0)).attr("y", toY(120)).attr("width", toX(80) - toX(0)).attr("height", toY(60) - toY(120)).attr("fill", "#0d3e2a").attr("opacity", .05);
+    .attr("fill", i % 2 ? "#cfdcd3" : "#d7e2da"));
+  grass.append("rect").attr("x", toX(0)).attr("y", toY(120)).attr("width", toX(80) - toX(0)).attr("height", toY(60) - toY(120)).attr("fill", "#aebfb3").attr("opacity", .16);
 
   const goal = svg.append("g").attr("class", "goal-net pitch-line").attr("aria-hidden", "true");
   const gx1 = toX(36), gx2 = toX(44), goalY = toY(120), backY = goalY - 13;
@@ -254,6 +281,9 @@ function renderMetrics() {
   const max = d3.max(values) || 1;
   const x = d3.scaleLinear().domain([0, max * (mobile ? 1.2 : 1.14)]).range([left, width - right]);
   const meta = metricMeta();
+  const leader = periods.map(d => ({ period: d, value: periodMetric(d) })).sort((a, b) => b.value - a.value)[0];
+  const metricHeadline = state.metric === "shots90" ? `${shortName(leader.period)} recorded the highest shot frequency` : state.metric === "npxg90" ? `${shortName(leader.period)} generated the most expected goals per 90` : `${shortName(leader.period)} had the highest average chance quality`;
+  d3.select("#metric-title").text(metricHeadline);
   const svg = d3.select(container).selectAll("svg").data([null]).join("svg")
     .attr("viewBox", `0 0 ${width} ${height}`).attr("role", "img").attr("aria-label", `${meta.label} by manager period, in chronological order`);
   svg.selectAll("title").data([null]).join("title").text(`${meta.label} across eight Barcelona manager periods`);
@@ -324,20 +354,7 @@ async function initialize() {
     if (!shots.length || periods.length < 2) throw new Error("The audited shot data is incomplete.");
     state.a = periods.find(d => shortName(d) === "Guardiola")?.manager_id || periods[0].manager_id;
     state.b = periods.find(d => shortName(d) === "Luis Enrique")?.manager_id || periods[1].manager_id;
-    for (const selector of ["#manager-a", "#manager-b"]) d3.select(selector).selectAll("option").data(periods).join("option")
-      .attr("value", d => d.manager_id).text(d => `${shortName(d)} · ${d.matches} appearances`);
-    d3.select("#manager-a").on("change", e => {
-      state.a = +e.target.value;
-      if (state.a === state.b) state.b = periods.find(p => +p.manager_id !== state.a).manager_id;
-      state.pinned = null;
-      render();
-    });
-    d3.select("#manager-b").on("change", e => {
-      state.b = +e.target.value;
-      if (state.a === state.b) state.a = periods.find(p => +p.manager_id !== state.b).manager_id;
-      state.pinned = null;
-      render();
-    });
+    d3.select("#swap-periods").on("click", () => { [state.a, state.b] = [state.b, state.a]; state.pinned = null; render(); });
     d3.select("#shot-type").on("change", e => { state.type = e.target.value; state.pinned = null; render(); });
     d3.select("#metric").on("change", e => { state.metric = e.target.value; renderMetrics(); });
     d3.selectAll("[data-mode]").on("click", e => {
@@ -350,12 +367,12 @@ async function initialize() {
     const all = shots.filter(d => d.shot_type !== "Penalty");
     const leaders = periods.map(d => ({ name: shortName(d), rate: periodMetric(d, "shots90") })).sort((a, b) => b.rate - a.rate);
     d3.select("#finding-text").text(`${formatInt(all.length)} audited non-penalty shots reveal a change in both frequency and location. ${leaders[0].name} has the highest observed shot rate (${fmt1(leaders[0].rate)} per 90), while the linked half-pitches show where each period differs.`);
-    d3.select("#scope-appearances").text(formatInt(audit.messi_appearances));
     d3.select("#scope-shots").text(formatInt(audit.non_penalty_shots));
     d3.select("#provenance").text(`Audited source: ${audit.barcelona_match_records} Barcelona match files, ${audit.messi_appearances} Messi lineup appearances and ${formatInt(audit.shot_events)} shot events; ${audit.manager_source_counts?.["sole-known-manager-in-season"] || 0} manager records inferred only in otherwise single-manager seasons. Snapshot ${audit.commit.slice(0, 12)}; all rules and IDs remain available in the audit file.`);
+    drawHeroVisual();
     render();
     let resizeTimer;
-    new ResizeObserver(() => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderMetrics, 100); }).observe(document.querySelector("#metric-chart"));
+    new ResizeObserver(() => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { drawHeroVisual(); renderMetrics(); }, 100); }).observe(document.querySelector("#metric-chart"));
   } catch (error) {
     console.error(error);
     d3.select("#finding-text").text(`Unable to load the visualization: ${error.message}`);
