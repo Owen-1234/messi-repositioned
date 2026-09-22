@@ -8,6 +8,14 @@ const COLOR = { a: "#a50044", b: "#004d98", goal: "#edbb00", neutral: "#77777e" 
 const fmt = d3.format(",.2f");
 const fmt1 = d3.format(".1f");
 const formatInt = d3.format(",.0f");
+const GRID_X = 12;
+const GRID_Y = 12;
+const X_MIN = 60;
+const X_MAX = 120;
+const Y_MIN = 0;
+const Y_MAX = 80;
+const X_BIN = (X_MAX - X_MIN) / GRID_X;
+const Y_BIN = (Y_MAX - Y_MIN) / GRID_Y;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let shots = [], periods = [], audit = {}, initialized = false, metricsInitialized = false;
 
@@ -72,7 +80,7 @@ function drawHeroVisual() {
   const bins = binsFor(all).filter(d => d.count);
   const max = d3.max(bins, d => d.share) || 1;
   const glow = svg.append("g").attr("aria-hidden", "true");
-  bins.forEach(d => glow.append("circle").attr("cx", x(60 + (d.xBin + .5) * 7.5)).attr("cy", y((d.yBin + .5) * 10)).attr("r", 7 + 20 * d.share / max).attr("fill", d.xBin % 2 ? COLOR.b : COLOR.a).attr("opacity", .15 + .35 * d.share / max).attr("filter", "blur(7px)"));
+  bins.forEach(d => glow.append("circle").attr("cx", x(X_MIN + (d.xBin + .5) * X_BIN)).attr("cy", y(Y_MIN + (d.yBin + .5) * Y_BIN)).attr("r", 7 + 20 * d.share / max).attr("fill", d.xBin % 2 ? COLOR.b : COLOR.a).attr("opacity", .15 + .35 * d.share / max).attr("filter", "blur(7px)"));
   svg.append("g").selectAll("circle").data(all.filter((_, i) => i % 10 === 0)).join("circle").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 1.35).attr("fill", (_, i) => i % 2 ? "#d75b8b" : "#5b94ce").attr("opacity", .58);
   svg.append("text").attr("x", width - 18).attr("y", 20).attr("text-anchor", "end").attr("fill", "rgba(255,255,255,.8)").attr("font-size", 10).attr("font-weight", 700).attr("letter-spacing", 1.5).text("ATTACKING HALF");
   svg.append("text").attr("x", 18).attr("y", height - 11).attr("fill", "rgba(255,255,255,.7)").attr("font-size", 10).text("2,278 attempts · one common scale");
@@ -82,8 +90,6 @@ function addPitchBase(svg, toX, toY, letter) {
   const defs = svg.append("defs");
   defs.append("clipPath").attr("id", `pitch-clip-${letter}`).append("rect")
     .attr("x", toX(0)).attr("y", toY(120)).attr("width", toX(80) - toX(0)).attr("height", toY(60) - toY(120));
-  const blur = defs.append("filter").attr("id", `density-blur-${letter}`).attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
-  blur.append("feGaussianBlur").attr("stdDeviation", 11);
   const grass = svg.append("g").attr("aria-hidden", "true");
   d3.range(8).forEach(i => grass.append("rect")
     .attr("x", toX(0)).attr("y", toY(120 - i * 7.5))
@@ -113,11 +119,11 @@ function addPitchBase(svg, toX, toY, letter) {
 }
 
 function binsFor(rows) {
-  const bins = d3.range(8).flatMap(xBin => d3.range(8).map(yBin => ({ xBin, yBin, count: 0, share: 0 })));
+  const bins = d3.range(GRID_X).flatMap(xBin => d3.range(GRID_Y).map(yBin => ({ xBin, yBin, count: 0, share: 0 })));
   const lookup = new Map(bins.map(d => [`${d.xBin}-${d.yBin}`, d]));
   rows.forEach(shot => {
-    const xBin = Math.max(0, Math.min(7, Math.floor((shot.x - 60) / 7.5)));
-    const yBin = Math.max(0, Math.min(7, Math.floor(shot.y / 10)));
+    const xBin = Math.max(0, Math.min(GRID_X - 1, Math.floor((shot.x - X_MIN) / X_BIN)));
+    const yBin = Math.max(0, Math.min(GRID_Y - 1, Math.floor((shot.y - Y_MIN) / Y_BIN)));
     lookup.get(`${xBin}-${yBin}`).count += 1;
   });
   bins.forEach(d => { d.share = rows.length ? d.count / rows.length : 0; });
@@ -131,8 +137,8 @@ function densityColor(letter, share, maxShare) {
 }
 
 function zoneText(d) {
-  const x0 = 60 + d.xBin * 7.5, x1 = x0 + 7.5;
-  const y0 = d.yBin * 10, y1 = y0 + 10;
+  const x0 = X_MIN + d.xBin * X_BIN, x1 = x0 + X_BIN;
+  const y0 = Y_MIN + d.yBin * Y_BIN, y1 = y0 + Y_BIN;
   return `StatsBomb coordinates x ${fmt1(x0)}–${fmt1(x1)}, y ${y0}–${y1}`;
 }
 
@@ -203,34 +209,16 @@ function drawPitch(selector, managerId, letter, maxShare) {
 
   if (state.mode === "density") {
     const bins = binsFor(rows);
-    const visual = modeLayer.selectAll("g.density-visual").data([null]).join("g").attr("class", "density-visual").attr("aria-hidden", "true");
-    const glows = visual.selectAll("circle.density-glow").data(bins.filter(d => d.count), d => `${d.xBin}-${d.yBin}`).join(
-      enter => enter.append("circle").attr("class", "density-glow").attr("opacity", 0),
-      update => update,
-      exit => transitionOf(exit, 260).attr("opacity", 0).remove()
-    )
-      .attr("cx", d => toX(d.yBin * 10 + 5))
-      .attr("cy", d => toY(60 + (d.xBin + .5) * 7.5))
-      .attr("fill", COLOR[letter])
-      .attr("filter", `url(#density-blur-${letter})`);
-    const cores = visual.selectAll("circle.density-core").data(bins.filter(d => d.count), d => `${d.xBin}-${d.yBin}`).join(
-      enter => enter.append("circle").attr("class", "density-core").attr("opacity", 0),
-      update => update,
-      exit => transitionOf(exit, 260).attr("opacity", 0).remove()
-    )
-      .attr("cx", d => toX(d.yBin * 10 + 5))
-      .attr("cy", d => toY(60 + (d.xBin + .5) * 7.5))
-      .attr("fill", d => densityColor(letter, d.share, maxShare));
     const cells = modeLayer.selectAll("rect.density-cell").data(bins, d => `${d.xBin}-${d.yBin}`).join(
       enter => enter.append("rect").attr("class", "density-cell").attr("opacity", 0),
       update => update,
       exit => transitionOf(exit).attr("opacity", 0).remove()
     )
-      .attr("x", d => toX(d.yBin * 10) + 1.3)
-      .attr("y", d => toY(60 + (d.xBin + 1) * 7.5) + 1.3)
-      .attr("width", toX(10) - toX(0) - 2.6)
-      .attr("height", toY(60) - toY(67.5) - 2.6)
-      .attr("rx", 1.5)
+      .attr("x", d => toX(d.yBin * Y_BIN) + .5)
+      .attr("y", d => toY(X_MIN + (d.xBin + 1) * X_BIN) + .5)
+      .attr("width", toX(Y_BIN) - toX(0) - 1)
+      .attr("height", toY(X_MIN) - toY(X_MIN + X_BIN) - 1)
+      .attr("rx", .4)
       .attr("tabindex", d => d.count ? 0 : null)
       .attr("role", d => d.count ? "button" : null)
       .attr("aria-label", d => d.count ? `${shortName(period)}, ${d.count} ${d.count === 1 ? "shot" : "shots"}, ${fmt1(d.share * 100)} percent, ${zoneText(d)}` : null)
@@ -240,10 +228,7 @@ function drawPitch(selector, managerId, letter, maxShare) {
       .on("click", (event, d) => showDensity(event, d, period, letter, true))
       .on("keydown", (event, d) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showDensity(event, d, period, letter, true); } })
       .on("mouseleave blur", resetDetail);
-    const t = d => Math.max(.08, Math.min(1, d.share / maxShare));
-    transitionOf(glows).attr("r", d => 21 + 35 * Math.sqrt(t(d))).attr("opacity", d => .2 + .44 * t(d));
-    transitionOf(cores).attr("r", d => 10 + 20 * Math.sqrt(t(d))).attr("opacity", d => .05 + .16 * t(d));
-    transitionOf(cells).attr("fill", "transparent").attr("stroke", "none").attr("opacity", d => d.count ? .001 : 0);
+    transitionOf(cells).style("fill", d => densityColor(letter, d.share, maxShare)).attr("stroke", "rgba(255,255,255,.18)").attr("stroke-width", .55).attr("opacity", d => d.count ? .9 : 0);
   } else {
     const symbol = d3.symbol();
     const marks = modeLayer.selectAll("path.shot").data(rows, d => d.event_id).join(
@@ -281,8 +266,8 @@ function renderLegend(maxShare) {
 }
 
 function laneLabel(yBin) {
-  if (yBin <= 1) return "left lane";
-  if (yBin >= 6) return "right lane";
+  if (yBin <= 2) return "left lane";
+  if (yBin >= 9) return "right lane";
   return "central lane";
 }
 
@@ -296,7 +281,7 @@ function renderMapInsight(aRows, bRows) {
   }
   const periodName = strongest.delta > 0 ? shortName(findPeriod(state.b)) : shortName(findPeriod(state.a));
   const direction = strongest.delta > 0 ? "more" : "fewer";
-  d3.select("#map-insight").html(`<span>SPATIAL NOTE</span> ${periodName} shows ${fmt1(Math.abs(strongest.delta) * 100)} percentage points ${direction} of the selected attempts in the ${laneLabel(strongest.yBin)} around x ${fmt1(60 + (strongest.xBin + .5) * 7.5)}.`);
+  d3.select("#map-insight").html(`<span>SPATIAL NOTE</span> ${periodName} shows ${fmt1(Math.abs(strongest.delta) * 100)} percentage points ${direction} of the selected attempts in the ${laneLabel(strongest.yBin)} around x ${fmt1(X_MIN + (strongest.xBin + .5) * X_BIN)}.`);
 }
 
 function renderPitch() {
@@ -307,7 +292,7 @@ function renderPitch() {
   renderLegend(maxShare);
   renderMapInsight(shotsFor(state.a), shotsFor(state.b));
   d3.select("#map-description").text(state.mode === "density"
-    ? "Shared density scale across both periods. Hover a zone; click to pin its count."
+    ? "12 × 12 cells · shared density scale across both periods. Hover a zone; click to pin its count."
     : "One mark per shot; size encodes xG and gold rings identify goals.");
   state.pinned = null;
   resetDetail();
