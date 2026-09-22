@@ -295,9 +295,11 @@ function renderMetrics() {
   const a = findPeriod(state.a), b = findPeriod(state.b), av = periodMetric(a), bv = periodMetric(b);
   const higher = av === bv ? null : av > bv ? { p: a, v: av, cls: "a", delta: av - bv } : { p: b, v: bv, cls: "b", delta: bv - av };
   const difference = state.metric === "xgshot" ? d3.format(".3f") : state.metric === "npxg90" ? fmt : fmt1;
-  d3.select("#metric-insight").html(higher
+  const precision = state.metric === "xgshot" ? .001 : state.metric === "npxg90" ? .005 : .05;
+  const precisionLabel = state.metric === "xgshot" ? "0.001" : state.metric === "npxg90" ? "0.005" : "0.05";
+  d3.select("#metric-insight").html(higher && higher.delta >= precision
     ? `<strong class="${higher.cls}">${shortName(higher.p)}</strong> is ${difference(higher.delta)} higher on ${meta.short}.`
-    : `The selected periods are equal on ${meta.short}.`);
+    : `The selected periods are ${higher ? `nearly equal (difference &lt; ${precisionLabel})` : "equal"} on ${meta.short}.`);
   d3.select("#metric-table").html(`<table><caption>${meta.label} by manager period</caption><thead><tr><th>Period</th><th>Value</th><th>Appearances</th><th>Minutes</th></tr></thead><tbody>${periods.map(d => `<tr><td>${shortName(d)}</td><td>${fmt(periodMetric(d))}</td><td>${d.matches}</td><td>${formatInt(d.minutes)}</td></tr>`).join("")}</tbody></table>`);
   metricsInitialized = true;
 }
