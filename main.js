@@ -82,6 +82,8 @@ function addPitchBase(svg, toX, toY, letter) {
   const defs = svg.append("defs");
   defs.append("clipPath").attr("id", `pitch-clip-${letter}`).append("rect")
     .attr("x", toX(0)).attr("y", toY(120)).attr("width", toX(80) - toX(0)).attr("height", toY(60) - toY(120));
+  const blur = defs.append("filter").attr("id", `density-blur-${letter}`).attr("x", "-50%").attr("y", "-50%").attr("width", "200%").attr("height", "200%");
+  blur.append("feGaussianBlur").attr("stdDeviation", 11);
   const grass = svg.append("g").attr("aria-hidden", "true");
   d3.range(8).forEach(i => grass.append("rect")
     .attr("x", toX(0)).attr("y", toY(120 - i * 7.5))
@@ -154,7 +156,10 @@ function showDensity(event, d, period, letter, pin = false) {
   tip.innerHTML = `<strong>${d.count} ${d.count === 1 ? "shot" : "shots"} · ${fmt1(d.share * 100)}%</strong><span class="tooltip-meta">${shortName(period)} · ${zoneText(d)}</span>`;
   tip.hidden = false;
   positionTooltip(event);
-  if (pin) state.pinned = { kind: "cell", letter, key: `${d.xBin}-${d.yBin}` };
+  if (pin) {
+    state.pinned = { kind: "cell", letter, key: `${d.xBin}-${d.yBin}` };
+    d3.select("#event-detail").attr("hidden", null);
+  }
 }
 
 function showShot(event, d, period, letter, pin = false) {
@@ -164,13 +169,16 @@ function showShot(event, d, period, letter, pin = false) {
   tip.innerHTML = `<strong>${d.outcome} · xG ${fmt(d.xg)}</strong><span class="tooltip-meta">${d.date} · ${d.opponent}<br>${d.minute}' · ${d.shot_type} · ${d.body_part}</span>`;
   tip.hidden = false;
   positionTooltip(event);
-  if (pin) state.pinned = { kind: "shot", letter, key: d.event_id };
+  if (pin) {
+    state.pinned = { kind: "shot", letter, key: d.event_id };
+    d3.select("#event-detail").attr("hidden", null);
+  }
 }
 
 function resetDetail() {
   if (state.pinned) return;
   document.querySelector("#shot-tooltip").hidden = true;
-  d3.select("#event-detail-text").text(state.mode === "density" ? "Hover or focus a density cell to inspect its count and share." : "Hover or focus a shot; select it to pin the match details. Gold diamonds are goals.");
+  d3.select("#event-detail").attr("hidden", true);
 }
 
 function drawPitch(selector, managerId, letter, maxShare) {
@@ -194,7 +202,26 @@ function drawPitch(selector, managerId, letter, maxShare) {
   if (modeLayer.empty()) modeLayer = layer.append("g").attr("class", `mode-layer mode-${state.mode}`);
 
   if (state.mode === "density") {
-    const cells = modeLayer.selectAll("rect.density-cell").data(binsFor(rows), d => `${d.xBin}-${d.yBin}`).join(
+    const bins = binsFor(rows);
+    const visual = modeLayer.selectAll("g.density-visual").data([null]).join("g").attr("class", "density-visual").attr("aria-hidden", "true");
+    const glows = visual.selectAll("circle.density-glow").data(bins.filter(d => d.count), d => `${d.xBin}-${d.yBin}`).join(
+      enter => enter.append("circle").attr("class", "density-glow").attr("opacity", 0),
+      update => update,
+      exit => transitionOf(exit, 260).attr("opacity", 0).remove()
+    )
+      .attr("cx", d => toX(d.yBin * 10 + 5))
+      .attr("cy", d => toY(60 + (d.xBin + .5) * 7.5))
+      .attr("fill", COLOR[letter])
+      .attr("filter", `url(#density-blur-${letter})`);
+    const cores = visual.selectAll("circle.density-core").data(bins.filter(d => d.count), d => `${d.xBin}-${d.yBin}`).join(
+      enter => enter.append("circle").attr("class", "density-core").attr("opacity", 0),
+      update => update,
+      exit => transitionOf(exit, 260).attr("opacity", 0).remove()
+    )
+      .attr("cx", d => toX(d.yBin * 10 + 5))
+      .attr("cy", d => toY(60 + (d.xBin + .5) * 7.5))
+      .attr("fill", d => densityColor(letter, d.share, maxShare));
+    const cells = modeLayer.selectAll("rect.density-cell").data(bins, d => `${d.xBin}-${d.yBin}`).join(
       enter => enter.append("rect").attr("class", "density-cell").attr("opacity", 0),
       update => update,
       exit => transitionOf(exit).attr("opacity", 0).remove()
@@ -213,7 +240,10 @@ function drawPitch(selector, managerId, letter, maxShare) {
       .on("click", (event, d) => showDensity(event, d, period, letter, true))
       .on("keydown", (event, d) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); showDensity(event, d, period, letter, true); } })
       .on("mouseleave blur", resetDetail);
-    transitionOf(cells).attr("fill", d => densityColor(letter, d.share, maxShare)).attr("opacity", d => d.count ? .86 : 0);
+    const t = d => Math.max(.08, Math.min(1, d.share / maxShare));
+    transitionOf(glows).attr("r", d => 21 + 35 * Math.sqrt(t(d))).attr("opacity", d => .2 + .44 * t(d));
+    transitionOf(cores).attr("r", d => 10 + 20 * Math.sqrt(t(d))).attr("opacity", d => .05 + .16 * t(d));
+    transitionOf(cells).attr("fill", "transparent").attr("stroke", "none").attr("opacity", d => d.count ? .001 : 0);
   } else {
     const symbol = d3.symbol();
     const marks = modeLayer.selectAll("path.shot").data(rows, d => d.event_id).join(
@@ -221,10 +251,11 @@ function drawPitch(selector, managerId, letter, maxShare) {
       update => update,
       exit => transitionOf(exit, 260).attr("opacity", 0).attr("transform", d => `translate(${toX(d.y)},${toY(d.x)}) scale(.2)`).remove()
     )
-      .attr("d", d => symbol.type(d.outcome === "Goal" ? d3.symbolDiamond : d3.symbolCircle).size(22 + Math.sqrt(d.xg) * 105)())
-      .attr("fill", d => d.outcome === "Goal" ? COLOR.goal : COLOR[letter])
-      .attr("stroke", d => d.outcome === "Goal" ? "#312800" : "#fff")
-      .attr("stroke-width", d => d.outcome === "Goal" ? 1.6 : .75)
+      .attr("class", d => d.outcome === "Goal" ? "shot goal" : "shot")
+      .attr("d", d => symbol.type(d3.symbolCircle).size(22 + Math.sqrt(d.xg) * 105)())
+      .attr("fill", d => d.outcome === "Goal" ? "none" : COLOR[letter])
+      .attr("stroke", d => d.outcome === "Goal" ? COLOR.goal : "#fff")
+      .attr("stroke-width", d => d.outcome === "Goal" ? 2.5 : .75)
       .attr("tabindex", 0).attr("role", "button")
       .attr("aria-label", d => `${d.date}, Barcelona against ${d.opponent}, ${d.outcome}, xG ${fmt(d.xg)}`)
       .on("mouseenter focus", (event, d) => showShot(event, d, period, letter))
@@ -243,13 +274,29 @@ function drawPitch(selector, managerId, letter, maxShare) {
 function renderLegend(maxShare) {
   const legend = d3.select("#density-legend").style("display", state.mode === "density" ? "flex" : "none").html("");
   if (state.mode !== "density") return;
-  legend.append("b").text("Share per cell");
-  legend.append("span").text("0%");
-  ["a", "b"].forEach(letter => {
-    legend.append("span").text(letter.toUpperCase());
-    d3.range(1, 5).forEach(i => legend.append("span").attr("class", "swatch").style("background", densityColor(letter, i / 4 * maxShare, maxShare)));
-  });
-  legend.append("span").text(`${fmt1(maxShare * 100)}%+`);
+  legend.append("span").attr("class", "legend-low").text("Low");
+  legend.append("span").attr("class", "density-gradient").style("--max-share", `${fmt1(maxShare * 100)}%`);
+  legend.append("span").attr("class", "legend-high").text(`${fmt1(maxShare * 100)}%+`);
+  legend.append("span").attr("class", "legend-label").text("shared density");
+}
+
+function laneLabel(yBin) {
+  if (yBin <= 1) return "left lane";
+  if (yBin >= 6) return "right lane";
+  return "central lane";
+}
+
+function renderMapInsight(aRows, bRows) {
+  const aBins = binsFor(aRows), bBins = binsFor(bRows);
+  const differences = aBins.map((a, i) => ({ ...a, bShare: bBins[i].share, delta: bBins[i].share - a.share }));
+  const strongest = differences.slice().sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta))[0];
+  if (!strongest || Math.abs(strongest.delta) < .01) {
+    d3.select("#map-insight").text("The selected periods have a similar spatial share in their largest zones.");
+    return;
+  }
+  const periodName = strongest.delta > 0 ? shortName(findPeriod(state.b)) : shortName(findPeriod(state.a));
+  const direction = strongest.delta > 0 ? "more" : "fewer";
+  d3.select("#map-insight").html(`<span>SPATIAL NOTE</span> ${periodName} shows ${fmt1(Math.abs(strongest.delta) * 100)} percentage points ${direction} of the selected attempts in the ${laneLabel(strongest.yBin)} around x ${fmt1(60 + (strongest.xBin + .5) * 7.5)}.`);
 }
 
 function renderPitch() {
@@ -258,9 +305,10 @@ function renderPitch() {
   drawPitch("#pitch-a", state.a, "a", maxShare);
   drawPitch("#pitch-b", state.b, "b", maxShare);
   renderLegend(maxShare);
+  renderMapInsight(shotsFor(state.a), shotsFor(state.b));
   d3.select("#map-description").text(state.mode === "density"
-    ? "Fixed 8 × 8 attacking-half cells show each period's share of attempts; both pitches use the same scale."
-    : "One mark per shot: size encodes xG, color identifies the period, and gold diamonds identify goals.");
+    ? "Shared density scale across both periods. Hover a zone; click to pin its count."
+    : "One mark per shot; size encodes xG and gold rings identify goals.");
   state.pinned = null;
   resetDetail();
 }
